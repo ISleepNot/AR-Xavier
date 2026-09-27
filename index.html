@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#f3f6f2">
+    <title>Cubo em realidade aumentada</title>
+
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: "Trebuchet MS", sans-serif;
+            background: #f3f6f2;
+            color: #17241e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .desktop-view {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 48px 24px;
+        }
+
+        .content {
+            width: min(100%, 680px);
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin: 0 0 14px;
+            color: #397b56;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.08;
+        }
+
+        .instructions {
+            margin: 16px auto 28px;
+            max-width: 460px;
+            color: #4c5b53;
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        .target {
+            display: block;
+            width: min(100%, 560px);
+            height: auto;
+            margin: 0 auto;
+            border: 1px solid #d5ded7;
+            background: white;
+        }
+
+        .target-caption {
+            margin: 12px 0 0;
+            color: #65736a;
+            font-size: 13px;
+        }
+
+        .ar-hint {
+            display: none;
+        }
+
+        body.ar-mode {
+            overflow: hidden;
+        }
+
+        body.ar-mode .desktop-view {
+            display: none;
+        }
+
+        body.ar-mode a-scene {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body.ar-mode .ar-hint {
+            position: fixed;
+            z-index: 2;
+            top: max(16px, env(safe-area-inset-top));
+            left: 50%;
+            display: block;
+            width: max-content;
+            max-width: calc(100% - 32px);
+            padding: 12px 16px;
+            transform: translateX(-50%);
+            border-radius: 4px;
+            background: #17241e;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="desktop-view">
+    <div class="content">
+        <p class="eyebrow">Experiência de realidade aumentada</p>
+        <h1>Cubo em realidade aumentada</h1>
+        <p class="instructions">Abra esta página no Android e aponte a câmera para esta imagem. O cubo aparecerá sobre ela.</p>
+        <img
+            class="target"
+            src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
+            alt="Imagem-alvo para posicionar o cubo em realidade aumentada">
+        <p class="target-caption">Mantenha esta imagem visível na tela do computador.</p>
+    </div>
+</main>
+
+<div class="ar-hint" role="status">Aponte a câmera para a imagem exibida no computador</div>
+
+<template id="ar-scene-template">
+    <a-scene
+        mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; uiScanning: no; uiLoading: no;"
+        embedded
+        color-space="sRGB"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false">
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-box
+                position="0 0 0"
+                rotation="0 0 0"
+                color="red"
+                depth="0.3"
+                height="0.3"
+                width="0.3">
+            </a-box>
+        </a-entity>
+    </a-scene>
+</template>
+
+<script>
+    const isMobile = window.matchMedia("(pointer: coarse), (max-width: 700px)").matches;
+
+    if (isMobile) {
+        document.body.classList.add("ar-mode");
+        document.body.append(document.querySelector("#ar-scene-template").content.cloneNode(true));
+    }
+</script>
+
+</body>
+</html>
